@@ -25,8 +25,6 @@ This project involves:
 ### 🧠 Model Insights
 
 ## 💻 Tech Stack
-
-![Environment](https://img.shields.io/badge/Environment-Google_Colab-FCC624?logo=googlecolab&style=for-the-badge)  
 ![Python](https://img.shields.io/badge/Python-3.12.2-FFD43B?logo=Python&logoColor=blue&style=for-the-badge)  
 ![Pandas](https://img.shields.io/badge/Pandas-2.2.2-2C2D72?logo=Pandas&logoColor=2C2D72&style=for-the-badge)  
 ![Plotly](https://img.shields.io/badge/Plotly-5.24.1-239120?logo=Plotly&logoColor=239120&style=for-the-badge)  
@@ -36,12 +34,11 @@ This project involves:
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-109989?logo=Fastapi&logoColor=109989&style=for-the-badge)  
 
 ### 🛠️ Tools and Platforms:
-1. **Google Colab**: Used for data exploration, training, and evaluation of the digit recognition model.  
-2. **Python**: Primary programming language for machine learning, data preprocessing, and API development.  
-3. **Scikit-learn**: For data preprocessing and building classical ML models.  
-4. **TensorFlow**: For building and training deep learning models (if needed for improved performance).  
-5. **Plotly**: For creating interactive visualizations during the analysis phase.  
-6. **FastAPI**: For exposing the trained model as an API and building backend services.  
+1. **Python**: Used for preprocessing, pipeline development, and embedding generation.
+2.	**FAISS**: For storing and retrieving dialog and metadata embeddings.
+3.	**OpenAI, Ollama, Gemini, DeepSeek APIs**: For generating responses to user queries.
+4.	**FastAPI**: Backend API for the application.
+5.	**Next.js**: Frontend UI for user interaction.
 
 ## 💻 Running Locally
 
