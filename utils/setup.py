@@ -1,4 +1,4 @@
-from utils.common import load_state, is_environment_ready, is_data_present
+from utils.common import load_state, is_environment_ready, is_data_present, save_state
 from utils.chromadb import drop_collection,create_collection
 from utils.config import get_default_collection
 from utils.data import convert_data_to_documents
@@ -20,10 +20,16 @@ def run_setup():
     documents = convert_data_to_documents()
     ## step 5: Upload the dataset to chromadb
     vector_db = embed_and_store_documents(documents,llm="openai")
+    ## Step 6: Update the state
+    save_state("is_setup_complete",True)
+
+def reset_app():
+    ## Step 1: Drop
+    run_setup()
 
 def initialize():
     ## Step 1: Load current state
-    current_state = load_state()
+    current_state,_ = load_state()
     
     ## Step 2: Check if the app is already initialized
     is_setup_complete = current_state["is_setup_complete"]

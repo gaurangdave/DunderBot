@@ -2,13 +2,12 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from utils.common import get_root_directory
+from utils.common import get_data_path, get_root_directory
 
 
 def load_data():
-    root_dir = get_root_directory()
-    data_dir = Path(root_dir, "data", "raw")
-    data = pd.read_csv(Path(data_dir,"data.csv"))
+    data_path = get_data_path()
+    data = pd.read_csv(data_path)
     return data
 
 def convert_data_to_documents():

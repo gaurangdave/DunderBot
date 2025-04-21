@@ -1,4 +1,4 @@
-from utils.setup import initialize
+from utils.setup import initialize, reset_app
 
 import typer
 
@@ -12,7 +12,7 @@ def setup():
 ## command to reset the app and initialize again.
 @app.command()
 def reset():
-    pass
+    reset_app()
 
 ## command to run the command line bot.
 @app.command()
