@@ -209,9 +209,38 @@ python -m main run
 
 ## 👣 Next Steps
 
-This is just the beginning for DunderBot! Here’s what’s coming up:
+The first version of DunderBot is now live and chatty — but there’s plenty of room to grow. Here are the next major enhancements on the roadmap:
 
-* 🧠 **LLM Query Enhancements** – Add query rewriting and function-calling to improve retrieval precision.
+---
+
+### 🔍 Smarter Retrieval via LLM-Generated Search Terms
+
+Rather than using the user’s raw input to query ChromaDB, the next step is to have the LLM **generate search keywords** and optionally **suggest how many results** to retrieve.
+
+This allows the bot to:
+- Improve recall on vague or indirect queries
+- Translate natural questions into more focused retrieval terms
+- Dynamically control how much context to retrieve (`top_k`)
+
+> Example:
+> - Input: *“What episode had the CPR training scene?”*  
+> - Generated Search Terms: `"CPR training Dwight dummy Michael song"`
+> - `top_k`: 5
+
+---
+
+### 🤖 LLM Tool-Calling using LangChain `RunnableSequence`
+
+Take the bot one step further by turning it into a **tool-using agent**. This enhancement will allow the LLM to directly call utility functions (like `search_chromadb`) with parameters like speaker, season, or episode — and then use the results to answer the user.
+
+> Imagine the LLM acting like this:
+> - “Hmm... this question needs me to search for Dwight quotes from Season 5...”
+> - Calls `search_chromadb(speaker="Dwight", season=5)`
+> - Uses results in its final response
+
+✅ This unlocks more **agentic behavior**, flexible use of metadata, and enables advanced workflows like follow-ups and tool chains.
+
+---
 * 🌐 **FastAPI Backend** – Serve the bot as an API for easy integration with web or other clients.
 * 🖥️ **Web UI (Next.js)** – Build a friendly frontend with model switchers, quote search, and metadata filters.
 * 🧪 **LLM Comparison** – Add Gemini, Ollama, DeepSeek, and others to compare response styles side-by-side.
@@ -251,4 +280,7 @@ I love combining real-world data with cutting-edge tools to build meaningful, pl
 
 ## 🛠 Skills
 
-`Python`, `Jupyter Notebook`, `OpenAI API`, `LangChain`, `ChromaDB`
+`Python`, `Jupyter Notebook`, `OpenAI API`, `LangChain`, `ChromaDB`,  
+`Vector Search`, `Retrieval-Augmented Generation (RAG)`, `Prompt Engineering`,  
+`Data Transformation`, `Embeddings`, `Typer`, `Rich`, `Halo`,  
+`.env Management`, `CLI UX`, `Modular Code Design`, `State Management`
