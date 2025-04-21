@@ -16,3 +16,6 @@ def get_default_db_path():
 
 def get_default_collection():
     return get_configuration("default_collection")
+
+def get_default_model():
+    return get_configuration("default_model")
