@@ -88,6 +88,14 @@ conda install -c conda-forge fastapi uvicorn -y
 ```bash
 python -m scripts.training
 ```
+### Running the CLI
+#### Run Setup
+* This script sets up the database with required data and embeddings.  
+* We need to run this **only once**.
+
+```bash
+python -m scripts.setup
+```
 
 ### Running the API
 * Run the following command to start the API server
