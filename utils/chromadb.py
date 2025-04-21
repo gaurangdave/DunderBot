@@ -6,7 +6,20 @@ import os
 
 from utils.config import get_default_db_path
 
+"""
+Ensures that the database directory exists and returns its path.
 
+This function retrieves the default database path using the `get_default_db_path` 
+function. If the directory at the specified path does not exist, it creates the 
+necessary directories. The function then returns the path as a string.
+
+Returns:
+    str: The absolute path to the database directory.
+
+Raises:
+    OSError: If the directory creation fails due to permission issues or other 
+             filesystem-related errors.
+"""
 def get_or_create_db_path():
     # helper function to create directories for db
     db_path = get_default_db_path()
