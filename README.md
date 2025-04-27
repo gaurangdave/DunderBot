@@ -171,6 +171,13 @@ This key is required to generate embeddings and produce LLM responses.
 > 📝 Your .env file should never be committed to GitHub — it’s already in .gitignore.
 
 ### 🛠 Default Configuration (`config.json`)
+#### ⚙️ Configuration
+
+DunderBot uses a simple `config.json` file to manage key settings. This allows you to tweak things like:
+
+- Which embedding or chat model to use
+- How many results to retrieve from the vector store
+- Where your ChromaDB files are stored
 
 ```json
 {
@@ -211,16 +218,6 @@ Launch the interactive CLI bot:
 ```bash
 python -m main run
 ```
-
-### ⚙️ Configuration
-
-DunderBot uses a simple `config.json` file to manage key settings. This allows you to tweak things like:
-
-- Which embedding or chat model to use
-- How many results to retrieve from the vector store
-- Where your ChromaDB files are stored
-
-
 
 ## App Screenshots
 ### CLI APP
