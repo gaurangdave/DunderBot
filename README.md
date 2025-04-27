@@ -170,7 +170,29 @@ OPENAI_API_KEY=your-key-goes-here
 This key is required to generate embeddings and produce LLM responses.
 > 📝 Your .env file should never be committed to GitHub — it’s already in .gitignore.
 
+### 🛠 Default Configuration (`config.json`)
+
+```json
+{
+  "default_db_path": "./db/dunder_bot",
+  "default_collection": "openai_embeddings",
+  "default_model": "gpt-4.1-mini",
+  "retrieval_k": 5
+}
+```
+You can edit this file to try different models or retrieval settings without touching the code.
+
+#### 💸 Note on API Costs
+
+This project uses the OpenAI API to generate embeddings and respond to user queries. Please be aware:
+* Each call to gpt-4.1-mini or embedding generation may incur a cost.
+* Make sure your OpenAI account has usage limits or billing caps enabled if you’re just experimenting.
+
+For pricing, check: [OpenAI pricing page](https://openai.com/api/pricing/)
+
+
 ### Running the CLI
+
 #### 🛠️ Setup the App
 Run the setup script to prepare the ChromaDB vector store and embed the documents:
 ```bash
@@ -198,27 +220,10 @@ DunderBot uses a simple `config.json` file to manage key settings. This allows y
 - How many results to retrieve from the vector store
 - Where your ChromaDB files are stored
 
-#### 🛠 Default Configuration (`config.json`)
 
-```json
-{
-  "default_db_path": "./db/dunder_bot",
-  "default_collection": "openai_embeddings",
-  "default_model": "gpt-4.1-mini",
-  "retrieval_k": 5
-}
-```
-You can edit this file to try different models or retrieval settings without touching the code.
 
-#### 💸 Note on API Costs
-
-This project uses the OpenAI API to generate embeddings and respond to user queries. Please be aware:
-* Each call to gpt-4.1-mini or embedding generation may incur a cost.
-* Make sure your OpenAI account has usage limits or billing caps enabled if you’re just experimenting.
-
-For pricing, check: [OpenAI pricing page](https://openai.com/api/pricing/)
-
-### App Screenshots
+## App Screenshots
+### CLI APP
 #### App Setup
 ![App Setup](./visualizations/reset.png)
 
