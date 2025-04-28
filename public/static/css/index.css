@@ -251,3 +251,12 @@ button#send-button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
 }
+
+@media (max-width: 768px) {
+  .chat-container {
+    width: 100%;
+    border-radius: 0;
+    height: 100vh;
+    margin-top: 0;
+  }
+}
