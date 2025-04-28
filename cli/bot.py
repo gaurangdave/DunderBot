@@ -1,3 +1,4 @@
+from halo import Halo
 import pyfiglet
 
 from classes.dunder_bot import DunderBot
@@ -26,8 +27,12 @@ def run_bot():
                 continue  # Ignore blank inputs
 
             # Process the query and stream the response
+            spinner = Halo(text='Thinking', spinner='dots')
+            spinner.start()
+            response_chuncks = dunder_bot.answer_me_this(user_query=user_input, number_of_results=10)
+            spinner.stop()
             print("\n🤖 DunderBot:")
-            for chunk in dunder_bot.answer_me_this(user_query=user_input, number_of_results=10):
+            for chunk in response_chuncks:
                 print(chunk, end="", flush=True)
             print("\n")
 

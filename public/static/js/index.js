@@ -42,13 +42,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function streamBotResponse(userMessage) {
-        const response = await fetch('/api/stream-response', {
+    async function streamBotResponse(user_input) {
+        const response = await fetch('/api/ask', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ message: userMessage }),
+            body: JSON.stringify({ user_input }),
         });
 
         const reader = response.body.getReader();
@@ -65,13 +65,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     sendButton.addEventListener('click', async function() {
-        const userMessage = userInput.value.trim();
-        if (userMessage) {
-            addMessage(userMessage, true);
+        const user_input = userInput.value.trim();
+        if (user_input) {
+            addMessage(user_input, true);
             userInput.value = '';
 
             // Stream bot response
-            await streamBotResponse(userMessage);
+            await streamBotResponse(user_input);
         }
     });
 
