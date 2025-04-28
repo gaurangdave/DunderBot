@@ -4,29 +4,24 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
 }
 
-.container {
+.chat-container {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    width: 100%;
     max-width: 600px;
-    margin: auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 90vh;
     background-color: #ffffff;
     border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
-.card {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-#chat-window {
+.chat-window {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
@@ -35,37 +30,12 @@ body {
     gap: 10px;
 }
 
-.user-message {
-    background-color: #d1e7dd;
-    color: #0f5132;
-    padding: 10px;
-    border-radius: 15px;
-    max-width: 70%;
-    align-self: flex-end;
-    word-wrap: break-word;
-}
-
-.bot-message {
-    background-color: #f8d7da;
-    color: #842029;
-    padding: 10px;
-    border-radius: 15px;
-    max-width: 70%;
-    align-self: flex-start;
-    word-wrap: break-word;
-}
-
-#chat-window div {
-    margin: 5px 0;
-}
-
-.input-group {
-    position: sticky;
-    bottom: 0;
-    background-color: #ffffff;
-    z-index: 10;
+.input-area {
+    display: flex;
+    align-items: center;
     padding: 10px;
     border-top: 1px solid #ccc;
+    background-color: #ffffff;
 }
 
 textarea#user-input {
@@ -93,15 +63,48 @@ button#send-button:hover {
     background-color: #0056b3;
 }
 
-.form-check-label {
-    font-size: 0.9rem;
+.user-message {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    padding: 10px;
+    border-radius: 15px;
+    max-width: 70%;
+    align-self: flex-end;
+    word-wrap: break-word;
+    display: block;
 }
 
-.form-check.form-switch {
-    position: sticky;
-    bottom: 50px;
-    background-color: #ffffff;
-    z-index: 10;
+.bot-message {
+    background-color: #f8d7da;
+    color: #842029;
+    /* padding: 10px; */
+    border-radius: 15px;
+    max-width: 70%;
+    align-self: flex-start;
+    word-wrap: break-word;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.bot-message .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    /* background-color: #ccc; */
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    overflow: hidden;
+}
+
+.bot-message .message-content {
+    background-color: inherit;
+    color: inherit;
     padding: 10px;
-    border-top: 1px solid #ccc;
+    border-radius: 15px;
+    /* max-width: 70%; */
+    word-wrap: break-word;
 }

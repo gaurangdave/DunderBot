@@ -1,32 +1,64 @@
-document.getElementById('send-button').addEventListener('click', function() {
-    const userInput = document.getElementById('user-input').value;
-    if (userInput.trim() !== '') {
-        const chatWindow = document.getElementById('chat-window');
+document.addEventListener('DOMContentLoaded', function() {
+    const chatWindow = document.getElementById('chat-window');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const voiceResponseToggle = document.getElementById('voice-response');
 
-        // Add user message
-        const userMessage = document.createElement('div');
-        userMessage.className = 'user-message';
-        userMessage.textContent = `User: ${userInput}`;
-        chatWindow.appendChild(userMessage);
+    let voiceEnabled = false;
 
-        // Add bot response placeholder
-        const botMessage = document.createElement('div');
-        botMessage.className = 'bot-message';
-        botMessage.textContent = `DunderBot: Response to "${userInput}"`;
-        chatWindow.appendChild(botMessage);
+    voiceResponseToggle.addEventListener('change', function() {
+        voiceEnabled = voiceResponseToggle.checked;
+    });
 
-        // Clear input field
-        document.getElementById('user-input').value = '';
+    function addMessage(content, isUser = true) {
+        const message = document.createElement('div');
+        message.className = isUser ? 'user-message' : 'bot-message';
 
-        // Scroll to the bottom of the chat window
+        if (!isUser) {
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = '🤖'; // Use bot emoji as profile pic
+
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+
+            message.appendChild(avatar);
+            message.appendChild(messageContent);
+        } else {
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+
+            message.appendChild(messageContent);
+        }
+
+        chatWindow.appendChild(message);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-});
 
-document.getElementById('user-input').addEventListener('keypress', function(event) {
-    console.log(event.key)
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent form submission if inside a form
-        document.getElementById('send-button').click();
+        if (!isUser && voiceEnabled) {
+            const utterance = new SpeechSynthesisUtterance(content);
+            window.speechSynthesis.speak(utterance);
+        }
     }
+
+    sendButton.addEventListener('click', function() {
+        const userMessage = userInput.value.trim();
+        if (userMessage) {
+            addMessage(userMessage, true);
+            userInput.value = '';
+
+            // Simulate bot response
+            setTimeout(() => {
+                addMessage(`Bot: Response to "${userMessage}"`, false);
+            }, 1000);
+        }
+    });
+
+    userInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendButton.click();
+        }
+    });
 });
