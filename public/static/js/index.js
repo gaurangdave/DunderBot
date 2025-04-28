@@ -1,3 +1,5 @@
+import { renderMarkdownToHTML } from './markdownRenderer.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
@@ -87,7 +89,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (done) break;
 
             botMessage += decoder.decode(value, { stream: true });
-            messageContent.textContent = botMessage; // Update the same message content
+            // Render markdown to HTML if the server response contains markdown
+            const renderedHTML = renderMarkdownToHTML(botMessage);
+            messageContent.innerHTML = renderedHTML; // Update the same message content with HTML
         }
 
         // Remove typing indicator after response is complete
