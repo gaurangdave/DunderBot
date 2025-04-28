@@ -1,5 +1,9 @@
-from utils.langchain import format_prompt, generate_response, initialize_chat_model, retrieve_documents
+from utils.langchain import format_prompt, initialize_chat_model, retrieve_documents
 from halo import Halo
+
+def stream_response(prompt, chat_model):
+    for chunk in chat_model.stream(prompt):
+        yield chunk.content
 
 class DunderBot:
     def __init__(self, llm="openai", collection="openai_embeddings"):
@@ -15,6 +19,5 @@ class DunderBot:
             user_query=user_query, number_of_results=number_of_results)
         prompt = format_prompt(user_query=user_query,
                                context_documents=context_documents)
-        answer = generate_response(prompt=prompt, chat_model=self.chat_model)
         spinner.stop()
-        return answer
+        return stream_response(prompt=prompt, chat_model=self.chat_model)

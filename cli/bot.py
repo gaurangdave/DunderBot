@@ -25,9 +25,11 @@ def run_bot():
             elif user_input == "":
                 continue  # Ignore blank inputs
 
-            # Process the query and get a response (call your ask_dunderbot() here)
-            response = dunder_bot.answer_me_this(user_query=user_input, number_of_results=10)
-            print(f"\n🤖 DunderBot:\n{response}\n")
+            # Process the query and stream the response
+            print("\n🤖 DunderBot:")
+            for chunk in dunder_bot.answer_me_this(user_query=user_input, number_of_results=10):
+                print(chunk, end="", flush=True)
+            print("\n")
 
         except KeyboardInterrupt:
             print("\n🛑 Ctrl+C detected. Exiting DunderBot.")

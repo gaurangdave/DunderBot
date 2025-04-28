@@ -42,16 +42,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    sendButton.addEventListener('click', function() {
+    async function streamBotResponse(userMessage) {
+        const response = await fetch('/api/stream-response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage }),
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let botMessage = '';
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            botMessage += decoder.decode(value, { stream: true });
+            addMessage(botMessage, false);
+        }
+    }
+
+    sendButton.addEventListener('click', async function() {
         const userMessage = userInput.value.trim();
         if (userMessage) {
             addMessage(userMessage, true);
             userInput.value = '';
 
-            // Simulate bot response
-            setTimeout(() => {
-                addMessage(`Bot: Response to "${userMessage}"`, false);
-            }, 1000);
+            // Stream bot response
+            await streamBotResponse(userMessage);
         }
     });
 
