@@ -13,8 +13,8 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 600px;
-    height: 90vh;
+    /* max-width: 600px; */
+    height: 100vh;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -82,11 +82,25 @@ button#send-button:hover {
     color: #000000;
     padding: 10px;
     border-radius: 15px;
-    max-width: 70%;
+    /* max-width: 70%; */
     align-self: flex-start;
     word-wrap: break-word;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: relative;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .bot-message .avatar {
