@@ -45,6 +45,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    const welcomeMessages = [
+        "🤖 DunderBot is online! Ask me anything about paper, pranks, or parties! 🎉",
+        "📚 Seeking Office wisdom? Ask about fire drills, Dundies, or CPR classes! 🚒🏆",
+        "🗣 'Would I rather be feared or loved? Easy. Both.' Start typing to meet your new assistant. 😎",
+        "🎈 It's a beautiful day at Dunder Mifflin Scranton. What can I help you with today?",
+        "🕵️‍♂️ Michael, Dwight, Jim, Pam... I've got all their secrets. Ask away!",
+        "😂 Warning: Asking about 'That's what she said' jokes may cause uncontrollable laughter.",
+        "📅 Fun fact: No bears, beets, or Battlestar Galactica questions are too obscure for me!",
+        "💬 'I am Beyoncé, always.' Now, how can I assist you?",
+        "🚀 Ready to dive into Scranton's wildest stories? Your question starts the adventure!",
+        "📂 Filing away boredom. Loading fun facts about The Office. Ask me anything!"
+    ];
+
+    // Display a random welcome message when the page loads
+    const randomWelcomeMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    addMessage(randomWelcomeMessage, false);
+
     async function streamBotResponse(user_input) {
         // Add the 'thinking' class to the chat container
         chatContainer.classList.add('thinking');
