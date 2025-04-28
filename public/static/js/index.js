@@ -70,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.appendChild(botMessageElement);
         chatWindow.scrollTop = chatWindow.scrollHeight;
 
+        // Add typing indicator
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = '<span></span><span></span><span></span> Thinking...';
+        messageContent.appendChild(typingIndicator);
+
         let botMessage = '';
 
         while (true) {
@@ -79,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function() {
             botMessage += decoder.decode(value, { stream: true });
             messageContent.textContent = botMessage; // Update the same message content
         }
+
+        // Remove typing indicator after response is complete
+        typingIndicator.remove();
     }
 
     sendButton.addEventListener('click', async function() {
