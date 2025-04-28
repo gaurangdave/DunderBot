@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
     const voiceResponseToggle = document.getElementById('voice-response');
+    const chatContainer = document.querySelector('.chat-container');
 
     let voiceEnabled = false;
 
@@ -43,6 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function streamBotResponse(user_input) {
+        // Add the 'thinking' class to the chat container
+        chatContainer.classList.add('thinking');
+
         const response = await fetch('/api/ask', {
             method: 'POST',
             headers: {
@@ -88,6 +92,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Remove typing indicator after response is complete
         typingIndicator.remove();
+
+        // Remove the 'thinking' class and add a 'pulse' animation
+        chatContainer.classList.remove('thinking');
+        chatContainer.classList.add('pulse');
+
+        // Remove the 'pulse' class after animation ends
+        setTimeout(() => {
+            chatContainer.classList.remove('pulse');
+        }, 1000);
     }
 
     sendButton.addEventListener('click', async function() {
