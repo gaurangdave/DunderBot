@@ -53,6 +53,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder('utf-8');
+
+        // Create a placeholder for the bot message
+        const botMessageElement = document.createElement('div');
+        botMessageElement.className = 'bot-message';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar';
+        avatar.textContent = '🤖';
+
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        botMessageElement.appendChild(avatar);
+        botMessageElement.appendChild(messageContent);
+
+        chatWindow.appendChild(botMessageElement);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
         let botMessage = '';
 
         while (true) {
@@ -60,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (done) break;
 
             botMessage += decoder.decode(value, { stream: true });
-            addMessage(botMessage, false);
+            messageContent.textContent = botMessage; // Update the same message content
         }
     }
 
