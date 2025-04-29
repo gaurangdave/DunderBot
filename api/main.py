@@ -35,4 +35,4 @@ async def read_root(request: Request):
 def stream_response(input: Base):
     user_input = input.user_input
     print(f"user_input : {user_input}")
-    return StreamingResponse(dunder_bot.answer_me_this(user_query=user_input,number_of_results=10))
+    return StreamingResponse(dunder_bot.answer_this_with_expertise(user_query=user_input))

@@ -1,11 +1,10 @@
-from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import CharacterTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain.schema import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
 
 from utils.chromadb import get_or_create_db_path
 from utils.config import get_default_model
@@ -67,7 +66,7 @@ def get_vector_db(llm="openai"):
     return vector_db
 
 
-def retrieve_documents(user_query, number_of_results=10):
+def retrieve_documents(user_query, filter={}, number_of_results=10):
     vector_db = get_vector_db(llm="openai")
     results = vector_db.similarity_search(
         query=user_query, k=number_of_results)
@@ -83,7 +82,56 @@ def initialize_chat_model(llm="openai"):
     return chat_model
 
 
-def format_prompt(user_query, context_documents):
+def format_query_optimizer_prompt(user_query):
+    query_optimizer_prompt = """
+    You are an intelligent query optimization agent for a Retrieval-Augmented Generation (RAG) system.
+
+    Your job is to:
+    1. Deduce the best search string to use for **similarity search** over the vector database based on the user's question.
+    2. Suggest a suitable number of results to retrieve (called "k"), usually between 3 to 10.
+    3. Propose **optional filters** based on available metadata fields to narrow down the search if the user mentions them.
+
+    Available metadata fields you can use for filtering:
+    - "season" (integer)
+    - "episode" (integer)
+    - "scene" (integer)
+    - "speakers" (string; comma-separated names)
+    - "episode_description" (string)
+    - "rating" (float)
+    - "directed_by" (string)
+    - "written_by" (string)
+
+    You must return your output **strictly in JSON format** with exactly these three keys:
+
+    {{
+    "user_query": "...",         # A short search string
+    "number_of_results": ...,                  # An integer value between 3 and 10
+    "filter": {{                   # A dictionary of filters or leave empty. See filter examples below{{}}
+        ...
+    }}
+    }}
+    
+    Filter Examples
+    filter={{'key1':value1}}
+    filter={{'$and': [{{'key1': {{'$eq': value1}}}}, {{'key2': {{'$eq': value2}}}}]}}
+    filter={{'$or': [{{'key1': {{'$eq': value1}}}}, {{'key2': {{'$eq': value2}}}}]}}
+    filter={{'key1': {{'$in': [value1, value2]}}}}
+
+    Some rules to follow:
+    - If the user mentions specific episodes, seasons, speakers, or directors, include them in "filters".
+    - If nothing is mentioned clearly, leave "filters" empty: `{{}}`.
+    - Do NOT explain anything. ONLY return raw JSON.
+
+    Here is the user query:
+    --------------------------
+    {user_query}
+    --------------------------
+    """
+    prompt_template = ChatPromptTemplate.from_template(query_optimizer_prompt)
+    return prompt_template.invoke({"user_query": user_query})
+
+
+def format_response_prompt(user_query, context_documents):
     system_template = """
     You are DunderBot 🤖 trained on quotes from The Office TV show.
     Use the following episode content to answer the user's question. Be fun, but don't make things up.
@@ -101,7 +149,15 @@ def format_prompt(user_query, context_documents):
         "user_query": user_query
     })
 
+
 def generate_response(prompt, chat_model):
     # chat_model = initialize_chat_model(llm="openai")
     reponse = chat_model.invoke(prompt)
     return reponse.content
+
+def generate_json_response(prompt, chat_model):
+    # chat_model = initialize_chat_model(llm="openai")
+    parser = JsonOutputParser()
+    chain = chat_model | parser
+    reponse = chain.invoke(prompt)
+    return reponse
