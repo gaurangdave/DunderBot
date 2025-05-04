@@ -10,15 +10,16 @@ def load_data():
     data = pd.read_csv(data_path)
     return data
 
+
 def convert_data_to_documents():
     data = load_data()
-    ## step 1: sort data by season, episode and id
-    data = data.sort_values(by=["season","episode","id"])
-    
-    ## step 2: group data by season and episode
-    grouped_data = data.groupby(["season","episode"])
-    
-    ## step 3: loop thru grouped data and convert it into list of documents
+    # step 1: sort data by season, episode and id
+    data = data.sort_values(by=["season", "episode", "id"])
+
+    # step 2: group data by season and episode
+    grouped_data = data.groupby(["season", "episode"])
+
+    # step 3: loop thru grouped data and convert it into list of documents
     # initializing list of documents
     documents = []
     # loop thru the grouped data to create documents and metadata
@@ -54,15 +55,17 @@ def convert_data_to_documents():
             elif i == len(scene_chunks) - 1:
                 combined_lines = f"{combined_lines}\n--- Episode End ---"
 
-            # Step 3.5: Create metadata object        
-            ## we are converting lists to string, cause ChromaDB metadat doesn't support list
-            ## will need to look into other solution for better querying
-            
-            written_by = ",".join(list(map(lambda writer: writer.strip(), chunk["written_by"].iloc[0].split("|"))))
-            
+            # Step 3.5: Create metadata object
+            # we are converting lists to string, cause ChromaDB metadat doesn't support list
+            # will need to look into other solution for better querying
+
+            written_by = ",".join(
+                list(map(lambda writer: writer.strip(), chunk["written_by"].iloc[0].split("|"))))
+
             metadata = {
-                "id":unique_id,
-                "season": int(season), ## converting to int cause metadata only supports int
+                "id": unique_id,
+                # converting to int cause metadata only supports int
+                "season": int(season),
                 "episode": int(episode),
                 "scene": int(scene_number),
                 "speakers": ",".join(speaker_list),
@@ -77,4 +80,64 @@ def convert_data_to_documents():
                 "text": combined_lines,
                 "metadata": metadata
             })
+    return documents
+
+
+def chunk_group_by_lines(group: pd.DataFrame, lines_per_chunk: int = 10):
+    """Split a group of dialogue lines into chunks with fixed number of lines."""
+    total_lines = len(group)
+    num_chunks = (total_lines + lines_per_chunk - 1) // lines_per_chunk
+    return np.array_split(group, num_chunks)
+
+
+def convert_data_to_documents_by_lines(lines_per_chunk: int = 10):
+    data = load_data()
+    # Step 1: sort data by season, episode and id
+    data = data.sort_values(by=["season", "episode", "id"])
+
+    # Step 2: group data by season and episode
+    grouped_data = data.groupby(["season", "episode"])
+
+    # Step 3: initialize document list
+    documents = []
+
+    # Step 4: loop through grouped data
+    for (season, episode), group in grouped_data:
+        episode_description = group["description"].iloc[0]
+        total_chunks = chunk_group_by_lines(group, lines_per_chunk)
+
+        for i, chunk in enumerate(total_chunks):
+            chunk_id = f"s{season}_e{episode}_chunk{i+1}"
+            combined_lines = " ".join(chunk["lines"].values)
+
+            # Add episode start/end markers
+            if i == 0:
+                combined_lines = f"--- Episode Start ---\n{episode_description}\n{combined_lines}"
+            elif i == len(total_chunks) - 1:
+                combined_lines = f"{combined_lines}\n--- Episode End ---"
+
+            # Speakers
+            speaker_list = list(
+                map(str.strip, chunk["speaker"].unique().tolist()))
+
+            # Metadata
+            written_by = ",".join(
+                map(str.strip, group["written_by"].iloc[0].split("|")))
+            metadata = {
+                "id": chunk_id,
+                "season": int(season),
+                "episode": int(episode),
+                "scene": int(chunk["scene"].min()),  # approx
+                "speakers": ",".join(speaker_list),
+                "episode_description": episode_description,
+                "rating": float(group["rating"].iloc[0]),
+                "directed_by": group["directed_by"].iloc[0].strip(),
+                "written_by": written_by,
+            }
+
+            documents.append({
+                "text": combined_lines,
+                "metadata": metadata
+            })
+
     return documents

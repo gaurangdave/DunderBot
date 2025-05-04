@@ -1,7 +1,7 @@
 from utils.common import load_state, is_environment_ready, is_data_present, save_state
 from utils.chromadb import drop_collection, create_collection
 from utils.config import get_default_collection
-from utils.data import convert_data_to_documents
+from utils.data import convert_data_to_documents, convert_data_to_documents_by_lines
 from utils.langchain import embed_and_store_documents
 from halo import Halo
 
@@ -39,7 +39,7 @@ def run_setup():
     # step 4: prepare dataset
     spinner = Halo(text='Converting data to documents...', spinner='dots')
     spinner.start()
-    documents = convert_data_to_documents()
+    documents = convert_data_to_documents_by_lines()
     spinner.succeed(f"Prepared {len(documents)} documents")
 
     # step 5: Upload the dataset to chromadb
