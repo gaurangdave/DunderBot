@@ -66,10 +66,12 @@ def get_vector_db(llm="openai"):
     return vector_db
 
 
-def retrieve_documents(user_query, filter={}, number_of_results=10):
+def retrieve_documents(user_query, filter=None, number_of_results=10):
     vector_db = get_vector_db(llm="openai")
+    if not filter:
+        filter = None
     results = vector_db.similarity_search(
-        query=user_query, k=number_of_results)
+        query=user_query, k=number_of_results, filter=filter)
     return results
 
 
@@ -86,43 +88,46 @@ def format_query_optimizer_prompt(user_query):
     query_optimizer_prompt = """
     You are an intelligent query optimization agent for a Retrieval-Augmented Generation (RAG) system.
 
-    Your job is to:
+    🧠 Your job is to:
     1. Deduce the best search string to use for **similarity search** over the vector database based on the user's question.
-    2. Suggest a suitable number of results to retrieve (called "k"), usually between 3 to 10.
-    3. Propose **optional filters** based on available metadata fields to narrow down the search if the user mentions them.
+    2. Suggest a suitable number of results to retrieve (`number_of_results`), typically between 3 and 10.
+    3. Propose **optional filters** using the correct syntax for the metadata, if the query hints at specific values.
 
-    Available metadata fields you can use for filtering:
-    - "season" (integer)
-    - "episode" (integer)
-    - "scene" (integer)
-    - "speakers" (string; comma-separated names)
-    - "episode_description" (string)
-    - "rating" (float)
-    - "directed_by" (string)
-    - "written_by" (string)
+    📦 We are using **ChromaDB** as our vector store.
+    - ChromaDB supports **filtering using a Mongo-style syntax**.
+    - Use operators like:
+    - `$eq` (equal to)
+    - `$contains` (substring match for strings)
+    - `$gt`, `$lt` (for numeric comparisons, e.g., ratings)
 
-    You must return your output **strictly in JSON format** with exactly these three keys:
+    🎯 Available metadata fields you can filter on:
+    - `season` (integer)
+    - `episode` (integer)
+    - `scene` (integer)
+    - `speakers` (string; comma-separated)
+    - `episode_description` (string)
+    - `rating` (float)
+    - `directed_by` (string)
+    - `written_by` (string; comma-separated)
+
+    ✅ Output Format:
+    You must return your response strictly in **valid JSON** format with exactly these keys:
 
     {{
-    "user_query": "...",         # A short search string
-    "number_of_results": ...,                  # An integer value between 3 and 10
-    "filter": {{                   # A dictionary of filters or leave empty. See filter examples below{{}}
-        ...
+        "user_query": "...",               # A short search string for similarity search
+        "number_of_results": ...,          # Integer
+        "filter": {{                       # Object with metadata filters (optional)
+            "season": {{"$eq": 2}},
+            "speakers": {{"$contains": "Michael"}}
+        }} 
     }}
-    }}
-    
-    Filter Examples
-    filter={{'key1':value1}}
-    filter={{'$and': [{{'key1': {{'$eq': value1}}}}, {{'key2': {{'$eq': value2}}}}]}}
-    filter={{'$or': [{{'key1': {{'$eq': value1}}}}, {{'key2': {{'$eq': value2}}}}]}}
-    filter={{'key1': {{'$in': [value1, value2]}}}}
 
-    Some rules to follow:
-    - If the user mentions specific episodes, seasons, speakers, or directors, include them in "filters".
-    - If nothing is mentioned clearly, leave "filters" empty: `{{}}`.
-    - Do NOT explain anything. ONLY return raw JSON.
+    📌 Instructions:
+    - If the user specifies any metadata (season, episode, speaker, etc.), use them in the `filter` object.
+    - If not, return `"filter": {{}}`.
+    - Do NOT include explanations. ONLY return valid JSON.
 
-    Here is the user query:
+    🧾 User Query:
     --------------------------
     {user_query}
     --------------------------
@@ -154,6 +159,7 @@ def generate_response(prompt, chat_model):
     # chat_model = initialize_chat_model(llm="openai")
     reponse = chat_model.invoke(prompt)
     return reponse.content
+
 
 def generate_json_response(prompt, chat_model):
     # chat_model = initialize_chat_model(llm="openai")
