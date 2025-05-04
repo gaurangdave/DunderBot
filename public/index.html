@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/static/css/index.css">
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#007bff">
+    <meta name="msapplication-TileColor" content="#007bff">
     <meta name="description" content="Chat with DunderBot, your virtual assistant for all things Dunder Mifflin.">
     <link rel="apple-touch-icon" href="/static/images/icons/icon-192x192.png">
 </head>
@@ -17,6 +18,18 @@
     <div class="sub-header">DunderBot is here! Type your question below.</div>
 
     <div class="container chat-container">
+        <!-- Add a dropdown menu above the chat window -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="modeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Basic Mode
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="modeDropdown">
+                <li><a class="dropdown-item" href="#" data-mode="basic">Basic Mode</a></li>
+                <li><a class="dropdown-item" href="#" data-mode="optimized_query">Optimized Query Mode</a></li>
+                <li><a class="dropdown-item" href="#" data-mode="agentic">Agentic Mode</a></li>
+            </ul>
+        </div>
+
         <div id="chat-window" class="chat-window">
             <!-- Chat messages will appear here -->
         </div>
@@ -24,10 +37,10 @@
             <textarea id="user-input" class="form-control" placeholder="Ask anything..." rows="1"></textarea>
             <button id="send-button" class="btn btn-primary">Send</button>
         </div>
-        <div class="form-check form-switch">
+        <!-- <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="voice-response">
             <label class="form-check-label" for="voice-response">Enable Voice Response</label>
-        </div>
+        </div> -->
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.7/lib/marked.umd.min.js"></script>

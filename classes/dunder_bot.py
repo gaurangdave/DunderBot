@@ -28,6 +28,7 @@ class DunderBot:
         # validate the query
         required_keys = ["user_query"]
 
+        print(f"optmized_query : {optmized_query}")
         for key in required_keys:
             if key not in optmized_query:
                 raise ValueError(
@@ -38,6 +39,8 @@ class DunderBot:
         context_documents = retrieve_documents(
             user_query=optmized_query["user_query"], filter=optmized_query["filter"], number_of_results=optmized_query["number_of_results"])
 
+        print(f"context_documents : {context_documents}")
+
         # step 3: format prompt using the retrived documents
         print("answer_this_with_expertise - Step 3")
         prompt = format_response_prompt(user_query=user_query,
@@ -46,3 +49,6 @@ class DunderBot:
         # step 4: Augment the reponse and send it back
         print("answer_this_with_expertise - Step 4")
         return stream_response(prompt=prompt, chat_model=self.chat_model)
+ 
+    def answer_this_with_agent(self, user_query):
+        pass

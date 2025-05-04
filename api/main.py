@@ -9,6 +9,7 @@ from classes.dunder_bot import DunderBot
 
 class Base(BaseModel):
     user_input: str
+    mode: str = "basic"
 
 app = FastAPI()
 
@@ -34,5 +35,14 @@ async def read_root(request: Request):
 @app.post("/api/ask")
 def stream_response(input: Base):
     user_input = input.user_input
-    print(f"user_input : {user_input}")
-    return StreamingResponse(dunder_bot.answer_this_with_expertise(user_query=user_input))
+    mode = input.mode
+    if(mode == "optimized_query"):
+        print("Running optimized query reponse mode...")
+        return StreamingResponse(dunder_bot.answer_this_with_expertise(user_query=user_input))
+    if(mode == "agentic"):
+        print("Running agentic reponse mode...")
+        return StreamingResponse(dunder_bot.answer_this_with_agent(user_query=user_input))
+    
+    ## default to basic mode 
+    print("Running basic reponse mode...")
+    return StreamingResponse(dunder_bot.answer_me_this(user_query=user_input))

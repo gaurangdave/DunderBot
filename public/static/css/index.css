@@ -260,3 +260,16 @@ button#send-button:hover {
     margin-top: 0;
   }
 }
+
+/* Center the dropdown and add gap between dropdown and chat window */
+.dropdown {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Add gap between dropdown and chat window */
+}
+
+/* Ensure the dropdown width matches the widest option */
+.dropdown .btn {
+    min-width: 200px; /* Set a fixed minimum width to match the widest option */
+    text-align: center; /* Center align the text */
+}

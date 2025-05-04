@@ -4,14 +4,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatWindow = document.getElementById('chat-window');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
-    const voiceResponseToggle = document.getElementById('voice-response');
+    // const voiceResponseToggle = document.getElementById('voice-response');
     const chatContainer = document.querySelector('.chat-container');
+    let selectedMode = 'basic'; // Default mode
+
+    const modeDropdown = document.getElementById('modeDropdown');
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(event) {
+            event.preventDefault();
+            selectedMode = this.getAttribute('data-mode');
+            modeDropdown.textContent = this.textContent; // Update dropdown button text
+        });
+    });
 
     let voiceEnabled = false;
 
-    voiceResponseToggle.addEventListener('change', function() {
-        voiceEnabled = voiceResponseToggle.checked;
-    });
+    // voiceResponseToggle.addEventListener('change', function() {
+    //     voiceEnabled = voiceResponseToggle.checked;
+    // });
 
     function addMessage(content, isUser = true) {
         const message = document.createElement('div');
@@ -71,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ user_input }),
+            body: JSON.stringify({ user_input, mode: selectedMode }), // Pass the selected mode
         });
 
         const reader = response.body.getReader();

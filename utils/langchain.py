@@ -67,12 +67,14 @@ def get_vector_db(llm="openai"):
 
 
 def retrieve_documents(user_query, filter=None, number_of_results=10):
-    vector_db = get_vector_db(llm="openai")
-    if not filter:
-        filter = None
-    results = vector_db.similarity_search(
-        query=user_query, k=number_of_results, filter=filter)
-    return results
+    try:
+        vector_db = get_vector_db(llm="openai")
+        results = vector_db.similarity_search(
+            query=user_query, k=number_of_results, filter=filter or None)
+        return results
+    except RuntimeError as re:
+        print(f"[Warning] Skipping retrieval due to error: {re}")
+        return []
 
 
 def initialize_chat_model(llm="openai"):
@@ -86,51 +88,58 @@ def initialize_chat_model(llm="openai"):
 
 def format_query_optimizer_prompt(user_query):
     query_optimizer_prompt = """
-    You are an intelligent query optimization agent for a Retrieval-Augmented Generation (RAG) system.
+        You are an intelligent query optimization agent for a Retrieval-Augmented Generation (RAG) system.
+        Your job is to:
+        1. Deduce the most relevant short search string (`user_query`) to use for **similarity search** in a ChromaDB vector store.
+        2. Suggest how many documents to retrieve (`number_of_results`, typically between 3 and 10).
+        3. Propose an optional **metadata filter** using ChromaDB’s filtering syntax to narrow the search.
 
-    🧠 Your job is to:
-    1. Deduce the best search string to use for **similarity search** over the vector database based on the user's question.
-    2. Suggest a suitable number of results to retrieve (`number_of_results`), typically between 3 and 10.
-    3. Propose **optional filters** using the correct syntax for the metadata, if the query hints at specific values.
+        We are using **ChromaDB**, which supports metadata filters using a **Mongo-style syntax**.
 
-    📦 We are using **ChromaDB** as our vector store.
-    - ChromaDB supports **filtering using a Mongo-style syntax**.
-    - Use operators like:
-    - `$eq` (equal to)
-    - `$contains` (substring match for strings)
-    - `$gt`, `$lt` (for numeric comparisons, e.g., ratings)
+        You may use these comparison operators:
+        - `$eq`, `$ne`, `$gt`, `$lt`, `$ge`, `$le`
+        - `$in`, `$nin` (for lists of values)
+        - `$and`, `$or` (for combining multiple filters)
 
-    🎯 Available metadata fields you can filter on:
-    - `season` (integer)
-    - `episode` (integer)
-    - `scene` (integer)
-    - `speakers` (string; comma-separated)
-    - `episode_description` (string)
-    - `rating` (float)
-    - `directed_by` (string)
-    - `written_by` (string; comma-separated)
+        You can filter using these metadata fields:
+        - `season` (integer)
+        - `episode` (integer)
+        - `scene` (integer)
+        - `speakers` (string; comma-separated names`)
+        - `episode_description` (string)
+        - `rating` (float)
+        - `directed_by` (string)
+        - `written_by` (string; comma-separated names`)
 
-    ✅ Output Format:
-    You must return your response strictly in **valid JSON** format with exactly these keys:
+        Examples:
+        - To filter by speaker and season:
+        {{
+            "$and": [
+            {{"season": {{"$eq": 2}}}},
+            {{"speakers": {{"$in": ["Dwight"]}}}}
+            ]
+        }}
+        - To match any of two directors:
+            {{
+                "directed_by": {{"$in": ["Ken Kwapis", "Greg Daniels"]}}
+            }}
+        Output Format:
+        Return your response in valid JSON format with these exact keys:
+        {{
+        "user_query": "...",
+        "number_of_results": 5,
+        "filter": {{
+            ...
+        }}
+        }}
+        Instructions:
+        - If the user includes season, episode, speaker, director, etc., use them in the filter.
+        - Combine multiple filters using $and.
+        - If no filters are relevant, return "filter": {{}}.
+        - Do NOT explain anything. Only return the final JSON output.
 
-    {{
-        "user_query": "...",               # A short search string for similarity search
-        "number_of_results": ...,          # Integer
-        "filter": {{                       # Object with metadata filters (optional)
-            "season": {{"$eq": 2}},
-            "speakers": {{"$contains": "Michael"}}
-        }} 
-    }}
-
-    📌 Instructions:
-    - If the user specifies any metadata (season, episode, speaker, etc.), use them in the `filter` object.
-    - If not, return `"filter": {{}}`.
-    - Do NOT include explanations. ONLY return valid JSON.
-
-    🧾 User Query:
-    --------------------------
-    {user_query}
-    --------------------------
+        User Query:
+        {user_query}
     """
     prompt_template = ChatPromptTemplate.from_template(query_optimizer_prompt)
     return prompt_template.invoke({"user_query": user_query})
@@ -138,11 +147,20 @@ def format_query_optimizer_prompt(user_query):
 
 def format_response_prompt(user_query, context_documents):
     system_template = """
-    You are DunderBot 🤖 trained on quotes from The Office TV show.
-    Use the following episode content to answer the user's question. Be fun, but don't make things up.
-    ---------------------
-    {context}
-    ---------------------"""
+        You are DunderBot 🤖 — an assistant trained on dialogue and episode metadata from *The Office* TV show.
+
+        {{%- if context %}}
+        Use the following excerpts from the show to answer the user's question. Be witty, fun, and stay true to the characters — but do not make things up.
+
+        ---------------------
+        {context}
+        ---------------------
+
+        {{%- else %}}
+        Unfortunately, I couldn't find any relevant scenes from the show to help with this question. Still, try your best to answer it briefly and in-character using your general knowledge of *The Office*.
+
+        {{%- endif %}}
+    """
 
     prompt_template = ChatPromptTemplate.from_messages([
         ("system", system_template), ("user", "{user_query}")
