@@ -198,7 +198,7 @@ This project uses the OpenAI API to generate embeddings and respond to user quer
 For pricing, check: [OpenAI pricing page](https://openai.com/api/pricing/)
 
 
-### Running the CLI
+### Running the App
 
 #### 🛠️ Setup the App
 Run the setup script to prepare the ChromaDB vector store and embed the documents:
@@ -212,11 +212,23 @@ This step will:
 * Save the setup state in .state.json
 
 📝 You only need to run this once, unless you’re resetting the app.
-### 🤖 Start the Bot
+### 🤖 Start the Bot in CLI
 Launch the interactive CLI bot:
 
 ```bash
 python -m main run
+```
+
+### 🤖 Start the Bot in Web App
+Launch the `FastAPI` webapp:
+
+```bash
+uvicorn api.main:app --reload
+```
+
+Open the WebApp by going to following URL
+```
+http://localhost:8000/
 ```
 
 ## App Screenshots
@@ -229,6 +241,15 @@ python -m main run
 
 ![Answering Questions](./visualizations/answering_question.png)
 
+### Web App
+#### Welcome Page
+![alt text](./visualizations/webapp_setup.png)
+#### Basic Mode
+![alt text](./visualizations/basic_mode_demo_1.png)
+
+![alt text](./visualizations/basic_mode_demo_2.png)
+#### Optimized Query Mode
+![alt text](./visualizations/optimized_query_mode_demo_1.png)
 
 <!-- #### Default Home Page -->
 
