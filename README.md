@@ -262,6 +262,7 @@ http://localhost:8000/
 ## 👣 Next Steps
 
 The first version of DunderBot is now live and chatty — but there’s plenty of room to grow. Here are the next major enhancements on the roadmap:
+* Explore `Weaviate` for more advanced queries to improve chatbot response. 
 
 ---
 
