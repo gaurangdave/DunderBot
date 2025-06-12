@@ -1,8 +1,8 @@
-from utils.common import load_state, is_environment_ready, is_data_present, save_state
-from utils.chromadb import drop_collection, create_collection
-from utils.config import get_default_collection
-from utils.data import convert_data_to_documents, convert_data_to_documents_by_lines
-from utils.langchain import embed_and_store_documents
+from src.utils.common import load_state, is_environment_ready, is_data_present, save_state
+from src.utils.chromadb import drop_collection, create_collection
+from src.utils.config import get_default_collection
+from src.utils.data import convert_data_to_documents, convert_data_to_documents_by_lines
+from src.utils.langchain import embed_and_store_documents
 from halo import Halo
 
 

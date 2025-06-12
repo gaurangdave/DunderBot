@@ -1,10 +1,10 @@
 import chromadb
 from chromadb.config import Settings
-from utils.common import get_environment_vars, get_root_directory
+from src.utils.common import get_environment_vars, get_root_directory
 from pathlib import Path
 import os
 
-from utils.config import get_default_db_path
+from src.utils.config import get_default_db_path
 
 """
 Ensures that the database directory exists and returns its path.

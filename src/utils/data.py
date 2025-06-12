@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from utils.common import get_data_path, get_root_directory
+from src.utils.common import get_data_path, get_root_directory
 
 
 def load_data():

@@ -6,8 +6,8 @@ from langchain.chat_models import init_chat_model
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 
-from utils.chromadb import get_or_create_db_path
-from utils.config import get_default_model
+from src.utils.chromadb import get_or_create_db_path
+from src.utils.config import get_default_model
 
 
 def create_document_chunks(documents):

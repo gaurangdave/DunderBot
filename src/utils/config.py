@@ -1,7 +1,7 @@
 import os
 import json
 from pathlib import Path
-from utils.common import get_root_directory
+from src.utils.common import get_root_directory
 
 def get_configuration(key):
     root_dir = get_root_directory()

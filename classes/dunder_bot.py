@@ -1,4 +1,4 @@
-from utils.langchain import format_query_optimizer_prompt, format_response_prompt, generate_json_response, initialize_chat_model, retrieve_documents
+from src.utils.langchain import format_query_optimizer_prompt, format_response_prompt, generate_json_response, initialize_chat_model, retrieve_documents
 
 
 def stream_response(prompt, chat_model):
